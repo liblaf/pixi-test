@@ -36,7 +36,7 @@ def test_pip(pkg: str) -> None:
         run(
             [dtemp / ".venv" / "bin" / "pip", "install", pkg],
             cwd=dtemp,
-            log_file=LOG_DIR / "pixi" / pkg,
+            log_file=LOG_DIR / "pip" / pkg,
         )
 
 
@@ -47,7 +47,7 @@ def test_pixi(pkg: str) -> None:
         run(
             ["pixi", "-vvv", "add", "--pypi", pkg],
             cwd=dtemp,
-            log_file=LOG_DIR / "pip" / pkg,
+            log_file=LOG_DIR / "pixi" / pkg,
         )
 
 
