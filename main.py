@@ -1,4 +1,5 @@
 import concurrent.futures
+import os
 import pathlib
 import shutil
 import subprocess as sp
@@ -6,6 +7,21 @@ import tempfile
 from collections import defaultdict
 from collections.abc import Callable
 from concurrent.futures import Future, ThreadPoolExecutor
+
+StrPath = str | os.PathLike[str]
+LOG_DIR = pathlib.Path("logs")
+
+
+def run(
+    args: list[StrPath], cwd: StrPath, log_file: pathlib.Path | None = None
+) -> None:
+    proc: sp.CompletedProcess[bytes] = sp.run(
+        args, cwd=cwd, capture_output=True, check=True
+    )
+    if log_file is not None:
+        log_file.parent.mkdir(parents=True, exist_ok=True)
+        log_file.with_suffix(".stdout").write_bytes(proc.stdout)
+        log_file.with_suffix(".stderr").write_bytes(proc.stderr)
 
 
 def test_pip(pkg: str) -> None:
@@ -17,11 +33,10 @@ def test_pip(pkg: str) -> None:
             stderr=sp.DEVNULL,
             check=True,
         )
-        sp.run(
+        run(
             [dtemp / ".venv" / "bin" / "pip", "install", pkg],
-            stdout=sp.DEVNULL,
-            stderr=sp.DEVNULL,
-            check=True,
+            cwd=dtemp,
+            log_file=LOG_DIR / "pixi" / pkg,
         )
 
 
@@ -29,12 +44,10 @@ def test_pixi(pkg: str) -> None:
     with tempfile.TemporaryDirectory() as _dtemp:
         dtemp: pathlib.Path = pathlib.Path(_dtemp)
         shutil.copy("pyproject.toml", dtemp / "pyproject.toml")
-        sp.run(
-            ["pixi", "add", "--pypi", pkg],
+        run(
+            ["pixi", "-vvv", "add", "--pypi", pkg],
             cwd=dtemp,
-            stdout=sp.DEVNULL,
-            stderr=sp.DEVNULL,
-            check=True,
+            log_file=LOG_DIR / "pip" / pkg,
         )
 
 
@@ -44,13 +57,7 @@ def test_uv(pkg: str) -> None:
         sp.run(
             ["uv", "venv"], cwd=dtemp, stdout=sp.DEVNULL, stderr=sp.DEVNULL, check=True
         )
-        sp.run(
-            ["uv", "pip", "install", pkg],
-            cwd=dtemp,
-            stdout=sp.DEVNULL,
-            stderr=sp.DEVNULL,
-            check=True,
-        )
+        run(["uv", "pip", "install", pkg], cwd=dtemp, log_file=LOG_DIR / "uv" / pkg)
 
 
 class Records:

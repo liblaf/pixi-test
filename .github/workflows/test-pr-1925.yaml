@@ -22,3 +22,8 @@ jobs:
         run: python main.py
       - name: Output Results to GitHub Summary
         run: cat results.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload Logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs
+          path: logs
