@@ -1,0 +1,24 @@
+name: Test (#1925)
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+      - name: Setup pixi
+        run: |-
+          cargo install --git https://github.com/tdejager/pixi.git --branch feat/allow-manylinux-wheeltags --locked pixi
+          echo ~/.cargo/bin >> "$GITHUB_PATH"
+      - name: Setup uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Test
+        run: python main.py
+      - name: Output Results to GitHub Summary
+        run: cat results.md >> "$GITHUB_STEP_SUMMARY"
