@@ -16,12 +16,13 @@ def run(
     args: list[StrPath], cwd: StrPath, log_file: pathlib.Path | None = None
 ) -> None:
     proc: sp.CompletedProcess[bytes] = sp.run(
-        args, cwd=cwd, capture_output=True, check=True
+        args, cwd=cwd, capture_output=True, check=False
     )
     if log_file is not None:
         log_file.parent.mkdir(parents=True, exist_ok=True)
         log_file.with_suffix(".stdout").write_bytes(proc.stdout)
         log_file.with_suffix(".stderr").write_bytes(proc.stderr)
+    proc.check_returncode()
 
 
 def test_pip(pkg: str) -> None:
@@ -70,7 +71,7 @@ class Records:
         result: bool
         try:
             fn(pkg)
-        except Exception:
+        except sp.SubprocessError:
             result = False
         else:
             result = True
