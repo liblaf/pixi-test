@@ -1,0 +1,38 @@
+name: pip
+
+on:
+  push:
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+      - name: Install ${{ matrix.pkg }}
+        run: pip install "${{ matrix.pkg }}"
+    strategy:
+      matrix:
+        pkg:
+          - confz
+          - dvc
+          - dvclive
+          - gmsh
+          - icecream
+          - jax
+          - jax[cuda12]
+          - loguru
+          - matplotlib
+          - meshio[all]
+          - numpy
+          - pyright
+          - pytest
+          - pytest-benchmark
+          - pyvista
+          - ruff
+          - scipy
+          - sparse
+          - trimesh[all]
+      fail-fast: false
