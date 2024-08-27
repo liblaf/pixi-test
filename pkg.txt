@@ -1,0 +1,13 @@
+dvc
+dvclive
+icecream
+jax
+jax[cuda12]
+matplotlib
+meshpy
+numpy
+pytest
+pytest-benchmark
+pyvista
+scipy
+trimesh[all]
