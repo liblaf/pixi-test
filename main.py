@@ -74,7 +74,7 @@ class Records:
     def summary(self) -> str:
         md: str = "| Package | pip | pixi | uv |\n"
         md += "| --- | --- | --- | --- |\n"
-        for pkg in self._records:
+        for pkg in sorted(self._records.keys()):
             md += f"| {pkg} |"
             for tool in ["pip", "pixi", "uv"]:
                 md += " ✅ |" if self._records[pkg][tool] else " ❌ |"
