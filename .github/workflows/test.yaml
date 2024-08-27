@@ -17,6 +17,6 @@ jobs:
       - name: Setup pixi
         uses: prefix-dev/setup-pixi@v0
       - name: Test
-        run: bash main.sh
+        run: python main.py
       - name: Output Results to GitHub Summary
         run: cat results.md >> "$GITHUB_STEP_SUMMARY"

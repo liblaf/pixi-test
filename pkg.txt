@@ -4,6 +4,7 @@ icecream
 jax
 jax[cuda12]
 matplotlib
+meshio[all]
 meshpy
 numpy
 pytest
