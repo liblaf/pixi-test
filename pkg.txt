@@ -12,6 +12,7 @@ mkdocs
 mkdocs-material
 mkdocstrings[python]
 numpy
+nvidia-cuda-nvrtc-cu11
 pymeshfix
 pyright
 pytest
